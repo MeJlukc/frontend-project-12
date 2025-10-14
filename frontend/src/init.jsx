@@ -7,7 +7,7 @@ import leoProfanity from 'leo-profanity'
 import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react'
 
 import resources from './locales/index'
-import store from './app/store'
+import { store } from './app/store'
 import App from './App'
 import rollbarConfig from './configs/rollbarConfig'
 
