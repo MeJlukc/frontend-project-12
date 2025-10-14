@@ -1,33 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
 
-function App() {
-  const [count, setCount] = useState(0)
+import Header from './components/Header/index.jsx'
+import LoginPage from './pages/Login.jsx'
+import Signup from './pages/SignUp.jsx'
+import MainPage from './pages/Main.jsx'
+import NotFoundPage from './pages/NotFoundPage.jsx'
+import { resetRedirect } from './features/ui/uiSlice.jsx'
+import { selectIsAuth, clearAuth } from './features/auth/authSlice'
+import { PAGES } from './navigation/pageRoutes'
+import { selectRedirectToLogin } from './features/ui/uiSelectors.jsx'
+import { useEffect } from 'react'
+
+const App = () => {
+  const isAuth = useSelector(selectIsAuth)
+  const redirectToLogin = useSelector(selectRedirectToLogin)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  useEffect (() => {
+    if (redirectToLogin) {
+      dispatch(clearAuth())
+      dispatch(resetRedirect())
+      navigate(PAGES.LOGIN)
+    }
+  }, [redirectToLogin, dispatch, navigate])
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="d-flex flex-column h-100">
+        <Header />
+        <Routes>
+          <Route path={PAGES.MAIN} element={isAuth ? <MainPage /> : <Navigate to="/login" replace />} />
+          <Route path={PAGES.LOGIN} element={!isAuth ? <LoginPage /> : <Navigate to="/" replace />} />
+          <Route path={PAGES.NOT_FOUND} element={<NotFoundPage />} />
+          <Route path={PAGES.SIGNUP} element={<Signup />} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   )
 }
