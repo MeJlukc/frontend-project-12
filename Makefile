@@ -1,8 +1,23 @@
 install:
-	npm ci --prefix frontend
+	npm ci
 
-build: install
-	npm run build --prefix frontend
+start-frontend:
+	make -C frontend start
+
+start-backend:
+	npx start-server -s ./frontend/dist
 
 start:
-	npx start-server -s ./frontend/dist
+	make start-backend
+
+develop:
+	make start-backend & make start-frontend
+
+build:
+	rm -rf frontend-dist
+	npm run build
+
+run:
+	make start-backend & make start-frontend
+
+
