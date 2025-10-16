@@ -33,7 +33,7 @@ const AuthForm = ({ children, footer, isLoading = false, isPage = false }) => {
               <div className="text-center">
                 <span>{footer.text}</span>
                 {' '}
-                <a href={footer.href}>{footer.action}</a>
+                <Link to={footer.href}>{footer.action}</Link>
               </div>
             </Card.Footer>
           )}
